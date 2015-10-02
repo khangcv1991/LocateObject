@@ -1,0 +1,17 @@
+package au.edu.rmit.sef.model;
+
+import java.util.List;
+
+import au.edu.rmit.sef.ulti.SEFConstant;
+
+public class Shape {	
+	private List<Point> list;
+	private char shapeType = SEFConstant.ShapeType.L_TYPE;
+	public Shape(char shapeType) {
+		super();
+		this.shapeType = shapeType;
+	}
+	
+	
+
+}

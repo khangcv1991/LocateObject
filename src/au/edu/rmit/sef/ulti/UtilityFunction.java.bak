@@ -1,0 +1,282 @@
+package au.edu.rmit.sef.ulti;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import javax.swing.ImageIcon;
+
+import au.edu.rmit.sef.model.CellLabel;
+import au.edu.rmit.sef.model.Point;
+import au.edu.rmit.sef.view.MFrame;
+
+public class UtilityFunction {
+
+	/**
+	 * 
+	 * @param from
+	 * @param to
+	 * @return an Integer number belong to [from, to)
+	 */
+	public static int getRanNum(int from, int to) {
+		Random rand = new Random();
+		int n = rand.nextInt(to - from + 1) + from;
+		return n;
+	}
+
+	public static List getShapePointCollection(int shapeType) {
+		ArrayList<Point> mList = new ArrayList<Point>();
+		Point rootPoint;
+		switch (shapeType) {
+		case SEFConstant.ShapeType.L_TYPE: {
+			int sDir1 = getRanNum(0, 1);
+			int sDir2 = getRanNum(2, 3);
+			switch (sDir1) {
+			case SEFConstant.ShapeDirection.UP:
+				switch (sDir2) {
+				case SEFConstant.ShapeDirection.LEFT:
+					// x >= 2 , y >= 2
+					rootPoint = new Point(getRanNum(2,
+							SEFConstant.NUM_ROW - 1), getRanNum(2,
+							SEFConstant.NUM_COL - 1));
+					mList.add(rootPoint);
+					mList.add(new Point(rootPoint.getX() + 0,
+							rootPoint.getY() - 1));
+					mList.add(new Point(rootPoint.getX() + 0,
+							rootPoint.getY() - 2));
+					mList.add(new Point(rootPoint.getX() - 1,
+							rootPoint.getY() + 0));
+					mList.add(new Point(rootPoint.getX() - 2,
+							rootPoint.getY() + 0));
+					return mList;
+
+				case SEFConstant.ShapeDirection.RIGHT:
+					// x>=2 x <= 17 , y >=2
+					rootPoint = new Point(getRanNum(2,
+							SEFConstant.NUM_ROW - 3), getRanNum(2,
+							SEFConstant.NUM_COL - 1));
+					mList.add(rootPoint);
+					mList.add(new Point(rootPoint.getX() + 0,
+							rootPoint.getY() - 1));
+					mList.add(new Point(rootPoint.getX() + 0,
+							rootPoint.getY() - 2));
+					mList.add(new Point(rootPoint.getX() + 1,
+							rootPoint.getY() + 0));
+					mList.add(new Point(rootPoint.getX() + 2,
+							rootPoint.getY() + 0));
+					return mList;
+
+				}
+			case SEFConstant.ShapeDirection.DOWN:
+				switch (sDir2) {
+				case SEFConstant.ShapeDirection.LEFT:
+					// x >= 2 , y <= 17
+					rootPoint = new Point(getRanNum(2,
+							SEFConstant.NUM_ROW - 1), getRanNum(0,
+							SEFConstant.NUM_COL - 3));
+					mList.add(rootPoint);
+					mList.add(new Point(rootPoint.getX() + 0,
+							rootPoint.getY() + 1));
+					mList.add(new Point(rootPoint.getX() + 0,
+							rootPoint.getY() + 2));
+					mList.add(new Point(rootPoint.getX() - 1,
+							rootPoint.getY() + 0));
+					mList.add(new Point(rootPoint.getX() - 2,
+							rootPoint.getY() + 0));
+					return mList;
+
+				case SEFConstant.ShapeDirection.RIGHT:
+					// x <= 17 , y <= 17
+					rootPoint = new Point(getRanNum(0,
+							SEFConstant.NUM_ROW - 3), getRanNum(0,
+							SEFConstant.NUM_COL - 3));
+					mList.add(rootPoint);
+					mList.add(new Point(rootPoint.getX() + 0,
+							rootPoint.getY() + 1));
+					mList.add(new Point(rootPoint.getX() + 0,
+							rootPoint.getY() + 2));
+					mList.add(new Point(rootPoint.getX() + 1,
+							rootPoint.getY() + 0));
+					mList.add(new Point(rootPoint.getX() + 2,
+							rootPoint.getY() + 0));
+					return mList;
+
+				}
+				break;
+
+			}
+			break;
+		}
+		case SEFConstant.ShapeType.V_TYPE:
+			int sDir = getRanNum(0, 3);
+			switch (sDir) {
+			case SEFConstant.ShapeDirection.UP:
+				// x >= 2 x <= 17, y > = 2
+				rootPoint = new Point(getRanNum(2, SEFConstant.NUM_ROW - 3),
+						getRanNum(2, SEFConstant.NUM_COL - 1));
+				mList.add(rootPoint);
+				mList.add(new Point(rootPoint.getX() - 1, rootPoint.getY() - 1));
+				mList.add(new Point(rootPoint.getX() - 2, rootPoint.getY() - 2));
+				mList.add(new Point(rootPoint.getX() + 1, rootPoint.getY() - 1));
+				mList.add(new Point(rootPoint.getX() + 2, rootPoint.getY() - 2));
+				return mList;
+			case SEFConstant.ShapeDirection.DOWN:
+				// x >= 2 x <= 17, y <= 17
+				rootPoint = new Point(getRanNum(2, SEFConstant.NUM_ROW - 3),
+						getRanNum(0, SEFConstant.NUM_COL - 3));
+				mList.add(rootPoint);
+				mList.add(new Point(rootPoint.getX() - 1, rootPoint.getY() + 1));
+				mList.add(new Point(rootPoint.getX() - 2, rootPoint.getY() + 2));
+				mList.add(new Point(rootPoint.getX() + 1, rootPoint.getY() + 1));
+				mList.add(new Point(rootPoint.getX() + 2, rootPoint.getY() + 2));
+				return mList;
+			case SEFConstant.ShapeDirection.LEFT:
+
+				// x >= 2 , y >= 2 y <= 17
+				rootPoint = new Point(getRanNum(2, SEFConstant.NUM_ROW - 1),
+						getRanNum(2, SEFConstant.NUM_COL - 3));
+				mList.add(rootPoint);
+				mList.add(new Point(rootPoint.getX() - 1, rootPoint.getY() - 1));
+				mList.add(new Point(rootPoint.getX() - 2, rootPoint.getY() - 2));
+				mList.add(new Point(rootPoint.getX() - 1, rootPoint.getY() + 1));
+				mList.add(new Point(rootPoint.getX() - 2, rootPoint.getY() + 2));
+				return mList;
+			case SEFConstant.ShapeDirection.RIGHT:
+				// x >= 0 x <= 17 , y >= 2 y <= 17
+				rootPoint = new Point(getRanNum(2, SEFConstant.NUM_ROW - 3),
+						getRanNum(2, SEFConstant.NUM_COL - 3));
+				mList.add(rootPoint);
+				mList.add(new Point(rootPoint.getX() + 1, rootPoint.getY() - 1));
+				mList.add(new Point(rootPoint.getX() + 2, rootPoint.getY() - 2));
+				mList.add(new Point(rootPoint.getX() + 1, rootPoint.getY() + 1));
+				mList.add(new Point(rootPoint.getX() + 2, rootPoint.getY() + 2));
+				return mList;
+			}
+			break;
+
+		}
+
+		return null;
+	}
+
+	public static void setColorForPoint(Point point, int color,
+			MFrame parentView) {
+		CellLabel tmpCell = parentView.getSquareBoard().getCellSquares()[point
+				.getX()][point.getY()];
+		switch (color) {
+		case SEFConstant.CellColorInt.WHITE_BG:
+			tmpCell.setIcon(new ImageIcon(SEFConstant.CellColor.WHITE_BG));
+			break;
+		case SEFConstant.CellColorInt.RED_BG:
+			tmpCell.setIcon(new ImageIcon(SEFConstant.CellColor.RED_BG));
+			break;
+		case SEFConstant.CellColorInt.GRAY_BG:
+			tmpCell.setIcon(new ImageIcon(SEFConstant.CellColor.GRAY_BG));
+			break;
+		default:
+			break;
+		}
+
+	}
+
+	public static void setColorForPointCollection(List pointList, int color,
+			MFrame parentView) {
+		switch (color) {
+		case SEFConstant.CellColorInt.WHITE_BG:
+			for (Object point : pointList) {
+				Point tmp = (Point) point;
+				setColorForPoint(tmp, SEFConstant.CellColorInt.WHITE_BG,
+						parentView);
+			}
+			break;
+		case SEFConstant.CellColorInt.RED_BG:
+			for (Object point : pointList) {
+				Point tmp = (Point) point;
+				setColorForPoint(tmp, SEFConstant.CellColorInt.RED_BG,
+						parentView);
+			}
+			break;
+		case SEFConstant.CellColorInt.GRAY_BG:
+			for (Object point : pointList) {
+				Point tmp = (Point) point;
+				setColorForPoint(tmp, SEFConstant.CellColorInt.GRAY_BG,
+						parentView);
+			}
+			break;
+		default:
+			break;
+		}
+	}
+
+	public static Point convertIdToPoint(String id) {
+		Point point;
+		point = new Point(Integer.parseInt(id.split("-")[0].trim()),
+				Integer.parseInt(id.split("-")[1].trim()));
+		return point;
+	}
+
+	public static int getDistanceBetweenTwoPoints(Point a, Point b) {
+		return Math.abs(a.getX() - b.getX()) + Math.abs(a.getY() - b.getY());
+	}
+
+	public static boolean hasTheSameLocation(Point a, Point b) {
+		if (a.getX() == b.getX() && a.getY() == b.getY())
+			return true;
+		return false;
+	}
+
+	public static List getTwoPointCollectionIntersection(List list1, List list2) {
+		List mList = new ArrayList<Point>();
+		if (list1 == null || list2 == null)
+			return mList;
+		for (Object point1 : list1) {
+			for (Object point2 : list2) {
+				if (hasTheSameLocation((Point) point1, (Point) point2)) {
+					mList.add(point1);
+				}
+			}
+		}
+		return mList;
+	}
+
+	public static void displayShapeOnBoard(MFrame parentView) {
+		List tmp = parentView.getSquareBoard().getShapePoints();
+		if (tmp == null)
+			return;
+		for (Object object : tmp) {
+			Point point = (Point) object;
+			parentView.getSquareBoard().getCellSquares()[point.getX()][point
+					.getY()].setStatus(SEFConstant.CellStatus.UC_KEY);
+		}
+	}
+
+	public static void setStatusCell(Point point, int status, MFrame parentView) {
+		switch (status) {
+		case SEFConstant.CellStatus.BLANK:
+			parentView.getSquareBoard().getCellSquares()[point.getX()][point
+					.getY()].setStatus(SEFConstant.CellStatus.BLANK);
+			break;
+		case SEFConstant.CellStatus.C_KEY:
+			parentView.getSquareBoard().getCellSquares()[point.getX()][point
+					.getY()].setStatus(SEFConstant.CellStatus.C_KEY);
+			break;
+		case SEFConstant.CellStatus.UC_KEY:
+			parentView.getSquareBoard().getCellSquares()[point.getX()][point
+					.getY()].setStatus(SEFConstant.CellStatus.UC_KEY);
+			break;
+		case SEFConstant.CellStatus.ON_CLICK:
+			parentView.getSquareBoard().getCellSquares()[point.getX()][point
+					.getY()].setStatus(SEFConstant.CellStatus.ON_CLICK);
+			break;
+		}
+	}
+
+	public static void setStatusCellCollection(List points, int status,
+			MFrame parentView) {
+		for (Object object : points) {
+			Point tmpPoint = (Point) object;
+		setStatusCell(tmpPoint, status, parentView);	
+		}
+
+	}
+}
