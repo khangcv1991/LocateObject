@@ -1,4 +1,4 @@
-package au.edu.rmit.sef.model;
+package au.edu.rmit.sef.view;
 
 import java.awt.Color;
 import java.awt.Dimension;

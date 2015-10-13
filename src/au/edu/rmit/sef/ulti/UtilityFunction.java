@@ -1,15 +1,26 @@
 package au.edu.rmit.sef.ulti;
 
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
-import au.edu.rmit.sef.model.CellLabel;
+import au.edu.rmit.sef.model.Player;
 import au.edu.rmit.sef.model.Point;
 import au.edu.rmit.sef.model.Shape;
+import au.edu.rmit.sef.view.CellLabel;
 import au.edu.rmit.sef.view.MFrame;
 
 public class UtilityFunction {
@@ -20,6 +31,7 @@ public class UtilityFunction {
 	private static HashMap<Point, Point> threeTimes90 = new HashMap<Point, Point>();
 
 	private static List<Shape> shapeCollection = new ArrayList<Shape>();
+	public static List<Player> playerfileList = new ArrayList<Player>();
 
 	private static void initateData() {
 		orginalPoints.add(new Point(0, 0));
@@ -120,19 +132,23 @@ public class UtilityFunction {
 				SEFConstant.NUM_COL - 2));
 	}
 
-	public static List getShapePointCollection(String nameShape) {
+	// 20151013 khangcv change
+	// public static List getShapePointCollection(String nameShape) {
+	public static List getShapePointCollection() {
 		if (orginalPoints.size() == 0)
 			initateData();
 		List tmpList = new ArrayList<Point>();
 		Shape tmpShape = null;
 		Point newRoot = getRandomRootPointOfShap();
 		int ranAngle = 0;
-		for (Shape s : shapeCollection) {
-			if (s.getName().equals(nameShape)) {
-				tmpShape = s;
-				break;
-			}
-		}
+		int i = getRanNum(0, shapeCollection.size() - 1);
+		// for (Shape s : shapeCollection) {
+		// if (s.getName().equals(nameShape)) {
+		// tmpShape = s;
+		// break;
+		// }
+		// }
+		tmpShape = shapeCollection.get(i);
 		if (tmpShape == null)
 			return null;
 		// get random rotated angle
@@ -180,56 +196,7 @@ public class UtilityFunction {
 	}
 
 	
-
-	public static void setColorForPoint(Point point, int color,
-			MFrame parentView) {
-		CellLabel tmpCell = parentView.getSquareBoard().getCellSquares()[point
-				.getX()][point.getY()];
-		switch (color) {
-		case SEFConstant.CellColorInt.WHITE_BG:
-			tmpCell.setIcon(new ImageIcon(SEFConstant.CellColor.WHITE_BG));
-			break;
-		case SEFConstant.CellColorInt.RED_BG:
-			tmpCell.setIcon(new ImageIcon(SEFConstant.CellColor.RED_BG));
-			break;
-		case SEFConstant.CellColorInt.GRAY_BG:
-			tmpCell.setIcon(new ImageIcon(SEFConstant.CellColor.GRAY_BG));
-			break;
-		default:
-			break;
-		}
-
-	}
-
-	public static void setColorForPointCollection(List pointList, int color,
-			MFrame parentView) {
-		switch (color) {
-		case SEFConstant.CellColorInt.WHITE_BG:
-			for (Object point : pointList) {
-				Point tmp = (Point) point;
-				setColorForPoint(tmp, SEFConstant.CellColorInt.WHITE_BG,
-						parentView);
-			}
-			break;
-		case SEFConstant.CellColorInt.RED_BG:
-			for (Object point : pointList) {
-				Point tmp = (Point) point;
-				setColorForPoint(tmp, SEFConstant.CellColorInt.RED_BG,
-						parentView);
-			}
-			break;
-		case SEFConstant.CellColorInt.GRAY_BG:
-			for (Object point : pointList) {
-				Point tmp = (Point) point;
-				setColorForPoint(tmp, SEFConstant.CellColorInt.GRAY_BG,
-						parentView);
-			}
-			break;
-		default:
-			break;
-		}
-	}
-
+	
 	public static Point convertIdToPoint(String id) {
 		Point point;
 		point = new Point(Integer.parseInt(id.split("-")[0].trim()),
@@ -262,12 +229,12 @@ public class UtilityFunction {
 	}
 
 	public static void displayShapeOnBoard(MFrame parentView) {
-		List tmp = parentView.getSquareBoard().getShapePoints();
+		List tmp = parentView.getScreen5().getSquareBoard().getShapePoints();
 		if (tmp == null)
 			return;
 		for (Object object : tmp) {
 			Point point = (Point) object;
-			parentView.getSquareBoard().getCellSquares()[point.getX()][point
+			parentView.getScreen5().getSquareBoard().getCellSquares()[point.getX()][point
 					.getY()].setStatus(SEFConstant.CellStatus.UC_KEY);
 		}
 	}
@@ -275,20 +242,24 @@ public class UtilityFunction {
 	public static void setStatusCell(Point point, int status, MFrame parentView) {
 		switch (status) {
 		case SEFConstant.CellStatus.BLANK:
-			parentView.getSquareBoard().getCellSquares()[point.getX()][point
-					.getY()].setStatus(SEFConstant.CellStatus.BLANK);
+			parentView.getScreen5().getSquareBoard().getCellSquares()[point
+					.getX()][point.getY()]
+					.setStatus(SEFConstant.CellStatus.BLANK);
 			break;
 		case SEFConstant.CellStatus.C_KEY:
-			parentView.getSquareBoard().getCellSquares()[point.getX()][point
-					.getY()].setStatus(SEFConstant.CellStatus.C_KEY);
+			parentView.getScreen5().getSquareBoard().getCellSquares()[point
+					.getX()][point.getY()]
+					.setStatus(SEFConstant.CellStatus.C_KEY);
 			break;
 		case SEFConstant.CellStatus.UC_KEY:
-			parentView.getSquareBoard().getCellSquares()[point.getX()][point
-					.getY()].setStatus(SEFConstant.CellStatus.UC_KEY);
+			parentView.getScreen5().getSquareBoard().getCellSquares()[point
+					.getX()][point.getY()]
+					.setStatus(SEFConstant.CellStatus.UC_KEY);
 			break;
 		case SEFConstant.CellStatus.ON_CLICK:
-			parentView.getSquareBoard().getCellSquares()[point.getX()][point
-					.getY()].setStatus(SEFConstant.CellStatus.ON_CLICK);
+			parentView.getScreen5().getSquareBoard().getCellSquares()[point
+					.getX()][point.getY()]
+					.setStatus(SEFConstant.CellStatus.ON_CLICK);
 			break;
 		}
 	}
@@ -300,5 +271,146 @@ public class UtilityFunction {
 			setStatusCell(tmpPoint, status, parentView);
 		}
 
+	}
+
+	/*
+	 * 20151011 khangcv add
+	 */
+	public static List<Player> getPlayerList() {
+		try {
+			FileInputStream streamIn = new FileInputStream(
+					SEFConstant.FileLink.LIST_PLAYER);
+			ObjectInputStream objectinputstream = new ObjectInputStream(
+					streamIn);
+			@SuppressWarnings("unchecked")
+			List<Player> readCase = (List<Player>) objectinputstream
+					.readObject();
+			objectinputstream.close();
+			streamIn.close();
+			return readCase;
+
+		} catch (EOFException e) {
+
+		} catch (Exception e) {
+
+			JOptionPane.showMessageDialog(null, "player file does not exist "
+					+ e, "InfoBox: ", JOptionPane.INFORMATION_MESSAGE);
+		}
+		return null;
+	}
+
+	public static void addPlayerToList(Player player) {
+		FileOutputStream fout;
+		try {
+			fout = new FileOutputStream(SEFConstant.FileLink.LIST_PLAYER, true);
+
+			ObjectOutputStream oos = new ObjectOutputStream(fout);
+			List<Player> players = getPlayerList();
+			if (players == null)
+				players = new ArrayList<Player>();
+			players.add(player);
+			oos.writeObject(players);
+			oos.close();
+			fout.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null, "can not add player to file "
+					+ e, "InfoBox: ", JOptionPane.INFORMATION_MESSAGE);
+		} finally {
+			deleteFile(SEFConstant.FileLink.LIST_PLAYER);
+			createFile(SEFConstant.FileLink.LIST_PLAYER);
+		}
+	}
+
+	public static boolean isPlayerExist(Player player) {
+		List<Player> players = getPlayerList();
+		if (players == null)
+			return false;
+		for (Player player2 : players) {
+			if (player.getName().equals(player2.getName()))
+				return true;
+		}
+		return false;
+	}
+
+	public static List<Shape> getShapeList() {
+		try {
+			FileInputStream streamIn = new FileInputStream(
+					SEFConstant.FileLink.LIST_SHAPE);
+			ObjectInputStream objectinputstream = new ObjectInputStream(
+					streamIn);
+			List<Shape> readCase = (List<Shape>) objectinputstream.readObject();
+			streamIn.close();
+			return readCase;
+
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "shape file does not exist",
+					"InfoBox: ", JOptionPane.INFORMATION_MESSAGE);
+		}
+		return null;
+	}
+
+	public static void addShapeToList(Shape shape) {
+		FileOutputStream fout;
+		try {
+			fout = new FileOutputStream(SEFConstant.FileLink.LIST_SHAPE, true);
+
+			ObjectOutputStream oos = new ObjectOutputStream(fout);
+			List<Shape> shapes = getShapeList();
+			if (shapes == null)
+				shapes = new ArrayList<Shape>();
+			shapes.add(shape);
+			oos.writeObject(shapes);
+			oos.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null, "can not add shape to file "
+					+ e, "InfoBox: ", JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+
+	public static boolean isShapeExist(Shape shape) {
+		List<Shape> shapes = getShapeList();
+
+		for (Shape shape2 : shapes) {
+			if (shape.getList().size() == shape2.getList().size()
+					&& shape.getList().containsAll(shape2.getList()))
+				return true;
+		}
+		return false;
+	}
+
+	public static void deleteFile(String name) {
+		try {
+
+			File file = new File(name);
+			file.setWritable(true);
+			if (file.delete()) {
+				System.out.println(file.getName() + " is deleted!");
+			} else {
+				System.out.println("Delete operation is failed.");
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+	}
+
+	public static void createFile(String name) {
+		try {
+
+			File file = new File(name);
+			file.setWritable(true);
+			if (file.createNewFile()) {
+				System.out.println("File is created!");
+			} else {
+				System.out.println("File already exists.");
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

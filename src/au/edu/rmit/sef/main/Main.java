@@ -1,13 +1,14 @@
 package au.edu.rmit.sef.main;
 
-import au.edu.rmit.sef.controller.AllListener;
+import au.edu.rmit.sef.controller.GameContronller;
 
 public class Main {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
-		new AllListener().registerAllActionListener();
+		new GameContronller();
+		//new AllListener();
 	}
 
 }

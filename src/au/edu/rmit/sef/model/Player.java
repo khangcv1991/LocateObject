@@ -1,12 +1,21 @@
 package au.edu.rmit.sef.model;
 
+import java.io.Serializable;
+
 import au.edu.rmit.sef.ulti.SEFConstant;
 
-public class Player {
+public class Player implements Serializable{
 
 	private int id;
 	private String name;
 	private boolean inTurn = false;
+	private int type;
+	public int getType() {
+		return type;
+	}
+	public void setType(int type) {
+		this.type = type;
+	}
 	private int numLTurns = SEFConstant.TURN_NUM;
 	private int score;
 	public boolean isInTurn() {

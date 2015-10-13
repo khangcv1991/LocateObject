@@ -1,4 +1,4 @@
-package au.edu.rmit.sef.model;
+package au.edu.rmit.sef.view;
 
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -10,6 +10,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
+import au.edu.rmit.sef.model.Point;
 import au.edu.rmit.sef.ulti.SEFConstant;
 
 public class Board extends JPanel {

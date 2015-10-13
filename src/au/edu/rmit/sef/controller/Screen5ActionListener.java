@@ -1,25 +1,26 @@
 package au.edu.rmit.sef.controller;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import au.edu.rmit.sef.game.PlayRule;
-import au.edu.rmit.sef.model.CellLabel;
 import au.edu.rmit.sef.model.Match;
-import au.edu.rmit.sef.model.Player;
-import au.edu.rmit.sef.model.Point;
 import au.edu.rmit.sef.ulti.SEFConstant;
 import au.edu.rmit.sef.ulti.UtilityFunction;
 import au.edu.rmit.sef.view.MFrame;
 
-public class SEFActionListener {
-
+public class Screen5ActionListener {
 	private MFrame parentView;
 	private Match cMatch;
 
-	public SEFActionListener(Match cMatch, MFrame parentView) {
+	public Screen5ActionListener() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public Screen5ActionListener(MFrame parentView, Match cMatch) {
 		super();
 		this.parentView = parentView;
 		this.cMatch = cMatch;
@@ -33,83 +34,57 @@ public class SEFActionListener {
 		this.parentView = parentView;
 	}
 
-	public void jButton1ActionPerformed(ActionEvent e) {
-		UtilityFunction.displayShapeOnBoard(parentView);
-		setEnableJButton3(false);
-		setEnableJButton2(true);
-
-		setEnableJComboBox1(false);
-		setEnableJComboBox2(false);
-		setEnableJComboBox3(false);
-		// setEnabelCellLabels(false);
+	public Match getcMatch() {
+		return cMatch;
 	}
 
-	public void jButton2ActionPerformed(ActionEvent e) {
-
-		// khangcv 20150811 change
-		parentView.getSquareBoard().setShapePoints(null);
-		// end
-		setEnableJButton3(true);
-		setEnableJButton2(false);
-		setEnableJButton1(false);
-		setEnableJComboBox1(true);
-		setEnableJComboBox2(true);
-		setEnableJComboBox3(true);
-		// setEnabelCellLabels(false);
+	public void setcMatch(Match cMatch) {
+		this.cMatch = cMatch;
 	}
 
-	public void jButton3ActionPerformed(ActionEvent e) {
-		// initiate a match
-		this.cMatch = new Match();
+	// action listeners
+	public void quitActionPerformed(MouseEvent e) {
+		UtilityFunction.setStatusCellCollection(parentView.getScreen5()
+				.getSquareBoard().getShapePoints(),
+				SEFConstant.CellStatus.UC_KEY, parentView);
 
-		List<Point> mList = null;
-		// khangcv comment
-		// switch (parentView.getjComboBox1().getSelectedIndex()) {
-		// case SEFConstant.ShapeType.L_TYPE:
-		// mList = UtilityFunction
-		// .getShapePointCollection(SEFConstant.ShapeType.L_TYPE);
-		// parentView.getSquareBoard().setShapePoints(mList);
-		// break;
-		// case SEFConstant.ShapeType.V_TYPE:
-		// mList = UtilityFunction
-		// .getShapePointCollection(SEFConstant.ShapeType.V_TYPE);
-		// parentView.getSquareBoard().setShapePoints(mList);
-		// break;
-		// }
-		// end
-		// khangcv add try new function
-		String tmpOpt = (String) parentView.getjComboBox1().getSelectedItem();
-		mList = UtilityFunction.getShapePointCollection(tmpOpt);
-		parentView.getSquareBoard().setShapePoints(mList);
-		// end
-		for (Point point : mList) {
-			CellLabel tmp = parentView.getSquareBoard().getCellSquares()[point
-					.getX()][point.getY()];
-
-			tmp.setStatus(SEFConstant.CellStatus.C_KEY);
-			// end
+		int dialogResult = JOptionPane.showConfirmDialog(null,
+				"Would You Like to quit?", "Warning",
+				JOptionPane.YES_NO_OPTION);
+		
+		if (dialogResult == JOptionPane.YES_OPTION) {
+			parentView.dispose();
 		}
-		// khangcv create playerlist
-		PlayRule.generatePlayerList(cMatch.getPlayers(), parentView
-				.getjComboBox3().getSelectedIndex() + 2);
 
-		// end
-		// setEnabelCellLabels(true);
-		setEnableJButton3(false);
-		setEnableJButton2(true);
-		setEnableJButton1(true);
-		setEnableJComboBox1(false);
-		setEnableJComboBox2(false);
-		setEnableJComboBox3(false);
+	}
+
+	public void newActionPerformed(MouseEvent e) {
+		cMatch.refresh();
+		UtilityFunction.setStatusCellCollection(parentView.getScreen5().getSquareBoard().getShapePoints(), SEFConstant.CellStatus.BLANK, parentView);
+		parentView.setScreen(SEFConstant.GameState.SCREEN1);
+	}
+
+	public void traceActionPerformed(MouseEvent e) {
+		if (cMatch.isTrace() == true) {
+			UtilityFunction.setStatusCellCollection(cMatch.getTraceList(),
+					SEFConstant.CellStatus.BLANK, parentView);
+			cMatch.setTrace(false);
+		} else {
+			UtilityFunction.setStatusCellCollection(cMatch.getTraceList(),
+					SEFConstant.CellStatus.ON_CLICK, parentView);
+			cMatch.setTrace(true);
+		}
+	}
+
+	public void guessActionPerformed(MouseEvent e) {
 
 	}
 
 	public void cellMouseReleased(MouseEvent e) {
-		int opt = parentView.getjComboBox2().getSelectedIndex();
-		List isList;
-		List mList;// =
-					// PlayRule.getChosenPointCollection(UtilityFunction.convertIdToPoint(e.getSource().toString()),
-					// choiceOpt)
+		// int opt = parentView.getjComboBox2().getSelectedIndex();
+		int opt = cMatch.getPlayers().get(cMatch.getCurrPlayer()).getType();
+		List isList = null;
+		List mList = null;
 		switch (opt) {
 		case SEFConstant.ModePlay.POINT_OPT:
 			mList = PlayRule.getChosenPointCollection(
@@ -117,8 +92,9 @@ public class SEFActionListener {
 					SEFConstant.ModePlay.POINT_OPT);
 			// khangcv add
 			isList = UtilityFunction.getTwoPointCollectionIntersection(mList,
-					parentView.getSquareBoard().getShapePoints());
+					parentView.getScreen5().getSquareBoard().getShapePoints());
 			if (isList.size() == 0) {
+
 				UtilityFunction.setStatusCellCollection(mList,
 						SEFConstant.CellStatus.BLANK, parentView);
 			} else {
@@ -127,12 +103,7 @@ public class SEFActionListener {
 				mList.removeAll(isList);
 				UtilityFunction.setStatusCellCollection(mList,
 						SEFConstant.CellStatus.UC_KEY, parentView);
-
 			}
-
-			// end
-			// UtilityFunction.setColorForPointCollection(mList,
-			// SEFConstant.CellColorInt.WHITE_BG, parentView);
 			break;
 
 		case SEFConstant.ModePlay.LINE_OPT:
@@ -141,7 +112,7 @@ public class SEFActionListener {
 					SEFConstant.ModePlay.LINE_OPT);
 			// khangcv add
 			isList = UtilityFunction.getTwoPointCollectionIntersection(mList,
-					parentView.getSquareBoard().getShapePoints());
+					parentView.getScreen5().getSquareBoard().getShapePoints());
 			if (isList.size() == 0) {
 				UtilityFunction.setStatusCellCollection(mList,
 						SEFConstant.CellStatus.BLANK, parentView);
@@ -164,7 +135,7 @@ public class SEFActionListener {
 					SEFConstant.ModePlay.GRID_OPT);
 			// khangcv add
 			isList = UtilityFunction.getTwoPointCollectionIntersection(mList,
-					parentView.getSquareBoard().getShapePoints());
+					parentView.getScreen5().getSquareBoard().getShapePoints());
 			if (isList.size() == 0) {
 				UtilityFunction.setStatusCellCollection(mList,
 						SEFConstant.CellStatus.BLANK, parentView);
@@ -177,24 +148,26 @@ public class SEFActionListener {
 
 			}
 
-			// end
-			// UtilityFunction.setColorForPointCollection(mList,
-			// SEFConstant.CellColorInt.WHITE_BG, parentView);
 			break;
 
 		}
-		// khangcv add temporarily
-		// System.out.println(PlayRule.checkWin(parentView));;
-		System.out.println(PlayRule.getPlayerForTurn(cMatch, parentView));
+		if (cMatch.isTrace()) {
+			UtilityFunction.setStatusCellCollection(cMatch.getTraceList(),
+					SEFConstant.CellStatus.ON_CLICK, parentView);
+		}
+		setDisplay();
+		cMatch.setNextTurn();
 		// end
+
 	}
 
 	public void cellMousePressed(MouseEvent e) {
-		int opt = parentView.getjComboBox2().getSelectedIndex();
+		// int opt = parentView.getjComboBox2().getSelectedIndex();
+		int opt = cMatch.getPlayers().get(cMatch.getCurrPlayer()).getType();
 		List isList;
-		List mList;// =
-					// PlayRule.getChosenPointCollection(UtilityFunction.convertIdToPoint(e.getSource().toString()),
-					// choiceOpt)
+		List mList = null;// =
+		// PlayRule.getChosenPointCollection(UtilityFunction.convertIdToPoint(e.getSource().toString()),
+		// choiceOpt)
 
 		switch (opt) {
 		case SEFConstant.ModePlay.POINT_OPT:
@@ -202,7 +175,7 @@ public class SEFActionListener {
 					UtilityFunction.convertIdToPoint(e.getSource().toString()),
 					SEFConstant.ModePlay.POINT_OPT);
 			isList = UtilityFunction.getTwoPointCollectionIntersection(mList,
-					parentView.getSquareBoard().getShapePoints());
+					parentView.getScreen5().getSquareBoard().getShapePoints());
 			if (isList.size() != 0) {
 
 				UtilityFunction.setStatusCellCollection(isList,
@@ -224,7 +197,7 @@ public class SEFActionListener {
 					UtilityFunction.convertIdToPoint(e.getSource().toString()),
 					SEFConstant.ModePlay.LINE_OPT);
 			isList = UtilityFunction.getTwoPointCollectionIntersection(mList,
-					parentView.getSquareBoard().getShapePoints());
+					parentView.getScreen5().getSquareBoard().getShapePoints());
 			if (isList.size() != 0) {
 
 				UtilityFunction.setStatusCellCollection(isList,
@@ -251,7 +224,7 @@ public class SEFActionListener {
 					UtilityFunction.convertIdToPoint(e.getSource().toString()),
 					SEFConstant.ModePlay.GRID_OPT);
 			isList = UtilityFunction.getTwoPointCollectionIntersection(mList,
-					parentView.getSquareBoard().getShapePoints());
+					parentView.getScreen5().getSquareBoard().getShapePoints());
 			if (isList.size() != 0) {
 
 				UtilityFunction.setStatusCellCollection(isList,
@@ -267,6 +240,7 @@ public class SEFActionListener {
 			// UtilityFunction.setColorForPointCollection(mList,
 			// SEFConstant.CellColorInt.GRAY_BG, parentView);
 			// khangcv add display
+
 			PlayRule.getStatusLabel(
 					UtilityFunction.convertIdToPoint(e.getSource().toString()),
 					opt, parentView);
@@ -274,38 +248,15 @@ public class SEFActionListener {
 			break;
 
 		}
+		cMatch.getTraceList().removeAll(mList);
+		cMatch.getTraceList().removeAll(
+				parentView.getScreen5().getSquareBoard().getShapePoints());
+		cMatch.getTraceList().addAll(mList);
 	}
 
-	// disable or enable controller
-	private void setEnableJButton1(boolean opt) {
-		parentView.getjButton1().setEnabled(opt);
-	}
-
-	private void setEnableJButton2(boolean opt) {
-		parentView.getjButton2().setEnabled(opt);
-	}
-
-	private void setEnableJButton3(boolean opt) {
-		parentView.getjButton3().setEnabled(opt);
-	}
-
-	private void setEnableJComboBox1(boolean opt) {
-		parentView.getjComboBox1().setEnabled(opt);
-	}
-
-	private void setEnableJComboBox2(boolean opt) {
-		parentView.getjComboBox2().setEnabled(opt);
-	}
-
-	private void setEnableJComboBox3(boolean opt) {
-		parentView.getjComboBox3().setEnabled(opt);
-	}
-
-	private void setEnabelCellLabels(boolean opt) {
-		for (int i = 0; i < SEFConstant.NUM_ROW; i++) {
-			for (int j = 0; j < SEFConstant.NUM_COL; j++)
-				parentView.getSquareBoard().getCellSquares()[i][j]
-						.setEnabled(opt);
-		}
+	private void setDisplay(){
+		parentView.getScreen5().getPlayernameLabel().setText(cMatch.getPlayers().get(cMatch.getCurrPlayer()).getName());
+		parentView.getScreen5().getNoroundLabel().setText(cMatch.getNumTurns()+ "");
+		
 	}
 }

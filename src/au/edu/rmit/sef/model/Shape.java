@@ -1,12 +1,13 @@
 package au.edu.rmit.sef.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import au.edu.rmit.sef.ulti.SEFConstant;
 
-public class Shape {
+public class Shape implements Serializable{
 	
 	private List<Point> list = new ArrayList<Point>();
 	private String name;

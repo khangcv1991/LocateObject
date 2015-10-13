@@ -38,22 +38,25 @@ public class PlayRule {
 			if (point.getY() - 1 >= 0)
 				mList.add(new Point(point.getX() - 0, point.getY() - 1));
 
-			if (point.getX() + 1 <= 19 && point.getY() + 1 <= 19)
+			if (point.getX() + 1 <= SEFConstant.NUM_ROW - 1
+					&& point.getY() + 1 <= SEFConstant.NUM_COL - 1)
 				mList.add(new Point(point.getX() + 1, point.getY() + 1));
 
 			if (point.getX() - 1 >= 0)
 				mList.add(new Point(point.getX() - 1, point.getY() - 0));
 
-			if (point.getX() + 1 <= 19)
+			if (point.getX() + 1 <= SEFConstant.NUM_ROW - 1)
 				mList.add(new Point(point.getX() + 1, point.getY() - 0));
 
-			if (point.getX() - 1 >= 0 && point.getY() + 1 <= 19)
+			if (point.getX() - 1 >= 0
+					&& point.getY() + 1 <= SEFConstant.NUM_COL - 1)
 				mList.add(new Point(point.getX() - 1, point.getY() + 1));
 
-			if (point.getY() + 1 <= 19)
+			if (point.getY() + 1 <= SEFConstant.NUM_COL - 1)
 				mList.add(new Point(point.getX() - 0, point.getY() + 1));
 
-			if (point.getX() + 1 <= 19 && point.getY() - 1 >= 0)
+			if (point.getX() + 1 <= SEFConstant.NUM_ROW - 1
+					&& point.getY() - 1 >= 0)
 				mList.add(new Point(point.getX() + 1, point.getY() - 1));
 			break;
 
@@ -74,21 +77,21 @@ public class PlayRule {
 
 		List mList = getChosenPointCollection(point, choiceOpt);
 		List tmp = UtilityFunction.getTwoPointCollectionIntersection(mList,
-				parentView.getSquareBoard().getShapePoints());
+				parentView.getScreen5().getSquareBoard().getShapePoints());
 		int flag = 0;
 		switch (choiceOpt) {
 		case SEFConstant.ModePlay.POINT_OPT:
 
 			if (tmp.size() > 0) {
-				parentView.getjLabel1().setText(
-						SEFConstant.StatusLabel.MSG_GOT_IT);
+				// parentView.getjLabel1().setText(
+				// SEFConstant.StatusLabel.MSG_GOT_IT);
 				// khangcv add for change cell color
-				UtilityFunction.setColorForPointCollection(tmp, 1, parentView);
+				UtilityFunction.setStatusCellCollection(tmp, 1, parentView);
 				// end
 				flag = 1;
 			} else {
 				int min = 1000;
-				for (Object object : parentView.getSquareBoard()
+				for (Object object : parentView.getScreen5().getSquareBoard()
 						.getShapePoints()) {
 					Point tmpPoint = (Point) object;
 					if (min > UtilityFunction.getDistanceBetweenTwoPoints(
@@ -96,32 +99,36 @@ public class PlayRule {
 						min = UtilityFunction.getDistanceBetweenTwoPoints(
 								tmpPoint, point);
 				}
-				parentView.getjLabel1().setText(
-						SEFConstant.StatusLabel.MSG_FAR_TO + min + " units");
+				parentView
+						.getScreen5()
+						.getUnitLabel()
+						.setText(
+								SEFConstant.StatusLabel.MSG_FAR_TO + min
+										+ " units");
 				flag = 0;
 			}
 			break;
 		case SEFConstant.ModePlay.LINE_OPT:
 			if (tmp.size() > 0) {
-				parentView.getjLabel1().setText(
-						SEFConstant.StatusLabel.MSG_GOT_IT);
+				// parentView.getjLabel1().setText(
+				// SEFConstant.StatusLabel.MSG_GOT_IT);
 				flag = 1;
 			} else {
-				parentView.getjLabel1().setText(
-						SEFConstant.StatusLabel.MSG_AGAIN);
+				// parentView.getjLabel1().setText(
+				// SEFConstant.StatusLabel.MSG_AGAIN);
 				flag = 0;
 			}
 
 			break;
 		case SEFConstant.ModePlay.GRID_OPT:
 			if (tmp.size() > 0) {
-				parentView.getjLabel1().setText(
-						SEFConstant.StatusLabel.MSG_GOT_IT);
+				// parentView.getjLabel1().setText(
+				// SEFConstant.StatusLabel.MSG_GOT_IT);
 
 				flag = 1;
 			} else {
-				parentView.getjLabel1().setText(
-						SEFConstant.StatusLabel.MSG_AGAIN);
+				// parentView.getjLabel1().setText(
+				// SEFConstant.StatusLabel.MSG_AGAIN);
 				flag = 0;
 			}
 
@@ -132,18 +139,18 @@ public class PlayRule {
 	}
 
 	public static boolean checkWin(MFrame parentView) {
-		List mList = parentView.getSquareBoard().getShapePoints();
+		List mList = parentView.getScreen5().getSquareBoard().getShapePoints();
 		for (Object object : mList) {
 			Point point = (Point) object;
-			if (parentView.getSquareBoard().getCellSquares()[point.getX()][point
-					.getY()].getStatus() == SEFConstant.CellStatus.C_KEY)
+			if (parentView.getScreen5().getSquareBoard().getCellSquares()[point
+					.getX()][point.getY()].getStatus() == SEFConstant.CellStatus.C_KEY)
 				return false;
 		}
 		return true;
 	}
 
 	public static void generatePlayerList(List players, int num) {
-		if(players == null)
+		if (players == null)
 			players = new ArrayList<Player>();
 		for (int i = 0; i < num; i++) {
 			Player tmpPlayer = new Player();
@@ -153,12 +160,12 @@ public class PlayRule {
 	}
 
 	public static Player getPlayerForTurn(Match cMatch, MFrame parentView) {
-		
+
 		int numPlayer = cMatch.getPlayers().size();
-		//check if finishing match, return null if the match ends
-		if(((Player)(cMatch.getPlayers().get(0))).getNumLTurns() == 0)
+		// check if finishing match, return null if the match ends
+		if (((Player) (cMatch.getPlayers().get(0))).getNumLTurns() == 0)
 			return null;
-		
+
 		switch (numPlayer) {
 		case 2:
 			if (((Player) cMatch.getPlayers().get(0)).isInTurn() == false
@@ -169,14 +176,18 @@ public class PlayRule {
 			if (((Player) cMatch.getPlayers().get(0)).isInTurn() == true
 					&& ((Player) cMatch.getPlayers().get(1)).isInTurn() == false) {
 				((Player) cMatch.getPlayers().get(0)).setInTurn(false);
-				((Player) cMatch.getPlayers().get(0)).setNumLTurns(((Player) cMatch.getPlayers().get(0)).getNumLTurns() - 1);
+				((Player) cMatch.getPlayers().get(0))
+						.setNumLTurns(((Player) cMatch.getPlayers().get(0))
+								.getNumLTurns() - 1);
 				((Player) cMatch.getPlayers().get(1)).setInTurn(true);
 				return ((Player) cMatch.getPlayers().get(1));
 			}
 			if (((Player) cMatch.getPlayers().get(0)).isInTurn() == false
 					&& ((Player) cMatch.getPlayers().get(1)).isInTurn() == true) {
 				((Player) cMatch.getPlayers().get(0)).setInTurn(true);
-				((Player) cMatch.getPlayers().get(1)).setNumLTurns(((Player) cMatch.getPlayers().get(1)).getNumLTurns() - 1);
+				((Player) cMatch.getPlayers().get(1))
+						.setNumLTurns(((Player) cMatch.getPlayers().get(1))
+								.getNumLTurns() - 1);
 				((Player) cMatch.getPlayers().get(1)).setInTurn(false);
 				return ((Player) cMatch.getPlayers().get(0));
 			}
@@ -193,7 +204,9 @@ public class PlayRule {
 					&& ((Player) cMatch.getPlayers().get(1)).isInTurn() == false
 					&& ((Player) cMatch.getPlayers().get(2)).isInTurn() == false) {
 				((Player) cMatch.getPlayers().get(0)).setInTurn(false);
-				((Player) cMatch.getPlayers().get(0)).setNumLTurns(((Player) cMatch.getPlayers().get(0)).getNumLTurns() - 1);
+				((Player) cMatch.getPlayers().get(0))
+						.setNumLTurns(((Player) cMatch.getPlayers().get(0))
+								.getNumLTurns() - 1);
 				((Player) cMatch.getPlayers().get(1)).setInTurn(true);
 				return ((Player) cMatch.getPlayers().get(1));
 			}
@@ -202,16 +215,20 @@ public class PlayRule {
 					&& ((Player) cMatch.getPlayers().get(1)).isInTurn() == true
 					&& ((Player) cMatch.getPlayers().get(2)).isInTurn() == false) {
 				((Player) cMatch.getPlayers().get(1)).setInTurn(false);
-				((Player) cMatch.getPlayers().get(1)).setNumLTurns(((Player) cMatch.getPlayers().get(1)).getNumLTurns() - 1);
+				((Player) cMatch.getPlayers().get(1))
+						.setNumLTurns(((Player) cMatch.getPlayers().get(1))
+								.getNumLTurns() - 1);
 				((Player) cMatch.getPlayers().get(2)).setInTurn(true);
 				return ((Player) cMatch.getPlayers().get(2));
 			}
-			
+
 			if (((Player) cMatch.getPlayers().get(0)).isInTurn() == false
 					&& ((Player) cMatch.getPlayers().get(1)).isInTurn() == false
 					&& ((Player) cMatch.getPlayers().get(2)).isInTurn() == true) {
 				((Player) cMatch.getPlayers().get(2)).setInTurn(false);
-				((Player) cMatch.getPlayers().get(2)).setNumLTurns(((Player) cMatch.getPlayers().get(2)).getNumLTurns() - 1);
+				((Player) cMatch.getPlayers().get(2))
+						.setNumLTurns(((Player) cMatch.getPlayers().get(2))
+								.getNumLTurns() - 1);
 				((Player) cMatch.getPlayers().get(0)).setInTurn(true);
 				return ((Player) cMatch.getPlayers().get(2));
 			}
@@ -221,6 +238,6 @@ public class PlayRule {
 
 		return null;
 	}
-	
-	//public static void display
+
+	// public static void display
 }

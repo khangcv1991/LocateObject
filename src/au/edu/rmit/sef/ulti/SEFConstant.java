@@ -7,11 +7,24 @@ public class SEFConstant {
 	public final static int CELL_SIZE = 40;
 	public final static int TURN_NUM = 10;
 
+	public static interface FileLink {
+		public final static String LIST_PLAYER = "d:\\player.ser";
+		public final static String LIST_SHAPE = "c:\\shape.ser";
+	}
+
 	public static interface CellColor {
 		public final static String WHITE_BG = "C:\\Users\\Khang\\Pictures\\white.png";
 		public final static String RED_BG = "C:\\Users\\Khang\\Pictures\\Red.png";
 		public final static String GRAY_BG = "C:\\Users\\Khang\\Pictures\\Gray.jpg";
 
+	}
+
+	public static interface GameState {
+		public final static int SCREEN1 = 1;
+		public final static int SCREEN2 = 2;
+		public final static int SCREEN3 = 3;
+		public final static int SCREEN4 = 4;
+		public final static int SCREEN5 = 5;
 	}
 
 	public static interface CellColorInt {

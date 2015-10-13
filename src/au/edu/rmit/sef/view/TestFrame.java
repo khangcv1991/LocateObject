@@ -5,7 +5,6 @@
  */
 package au.edu.rmit.sef.view;
 
-import au.edu.rmit.sef.model.BoardPanel;
 
 /**
  *

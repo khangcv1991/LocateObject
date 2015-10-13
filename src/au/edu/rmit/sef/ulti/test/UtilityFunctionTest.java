@@ -2,12 +2,18 @@ package au.edu.rmit.sef.ulti.test;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.sun.corba.se.impl.javax.rmi.CORBA.Util;
+
+import au.edu.rmit.sef.model.Player;
 import au.edu.rmit.sef.model.Point;
 import au.edu.rmit.sef.ulti.SEFConstant;
 import au.edu.rmit.sef.ulti.UtilityFunction;
@@ -32,7 +38,7 @@ public class UtilityFunctionTest {
 		// fail("Not yet implemented");
 		int maxX = 0;
 		int maxY = 0;
-		List points = UtilityFunction.getShapePointCollection("L Type");
+		List points = UtilityFunction.getShapePointCollection();
 		for (Object object : points) {
 			Point tmp = (Point) object;
 			if (maxX < Math.abs((tmp.getX() - ((Point) points.get(0)).getX())))
@@ -45,7 +51,7 @@ public class UtilityFunctionTest {
 		if (maxY > 2)
 			fail("the generated shape is out of 3x3 grid");
 
-		points = UtilityFunction.getShapePointCollection("U Type");
+		points = UtilityFunction.getShapePointCollection();
 		for (Object object : points) {
 			Point tmp = (Point) object;
 			if (maxX < Math.abs((tmp.getX() - ((Point) points.get(0)).getX())))
@@ -144,5 +150,33 @@ public class UtilityFunctionTest {
 			fail("2 points are not the same location");
 		}
 	}
+	@Test
+	public void addPlayerTest() throws FileNotFoundException {
+		UtilityFunction.createFile(SEFConstant.FileLink.LIST_PLAYER);
+		
+		List<Player> players = UtilityFunction.getPlayerList();
+		Player p  = new Player();
+		int size1, size2;
+		
+		if (players == null)
+			size1 = 0;
+		else
+			size1 = players.size();
+		p.setName("a1");
+		UtilityFunction.addPlayerToList(p);
+		p = new Player();
+		p.setName("a2");
+		UtilityFunction.addPlayerToList(p);
+		p = new Player();
+		p.setName("a3");
+		UtilityFunction.addPlayerToList(p);
+		
+		players = UtilityFunction.getPlayerList();
+		size2 = players.size();
+		
+		if(size2 - size1 != 3)
+			fail("add un success");
+	}
+	
 
 }
