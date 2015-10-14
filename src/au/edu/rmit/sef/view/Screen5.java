@@ -5,7 +5,9 @@
  */
 package au.edu.rmit.sef.view;
 
+import au.edu.rmit.sef.model.Point;
 import au.edu.rmit.sef.ulti.SEFConstant;
+import au.edu.rmit.sef.ulti.UtilityFunction;
 
 /**
  *
@@ -65,7 +67,7 @@ public class Screen5 extends javax.swing.JPanel {
         noplayerLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/no_player2.PNG"))); // NOI18N
 
         playernameLabel.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
-        playernameLabel.setText("A1");
+        playernameLabel.setText("");
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/roundLabel.PNG"))); // NOI18N
 
@@ -78,7 +80,7 @@ public class Screen5 extends javax.swing.JPanel {
         guessButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/guessButton.PNG"))); // NOI18N
 
         unitLabel.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        unitLabel.setText("3 units");
+        unitLabel.setText("* units");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -144,7 +146,15 @@ public class Screen5 extends javax.swing.JPanel {
         );
     }// </editor-fold>                        
 
-
+    public void renew(){
+    	for(int i = 0; i < squareBoard.getNumRow() - 1; i ++){
+    		for(int j = 0; j < squareBoard.getNumCol() -1; j++){
+    			UtilityFunction.setColorForCell(squareBoard, new Point(i, j), SEFConstant.CellColorInt.WHITE_BG);
+    		}
+    	}
+    	playernameLabel.setText("");
+    	unitLabel.setText("* unit");
+    }
     public BoardPanel getBoardPanel() {
 		return boardPanel;
 	}

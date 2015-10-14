@@ -61,7 +61,7 @@ public class SEFConstant {
 	public static interface StatusLabel {
 		public final static String MSG_GOT_IT = "You got it!";
 		public final static String MSG_AGAIN = "try again!";
-		public final static String MSG_FAR_TO = "it is not far to you: ";
+		public final static String MSG_FAR_TO = "";
 	}
 
 	public static interface PlayerNumber {

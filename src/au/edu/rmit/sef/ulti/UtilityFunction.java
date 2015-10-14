@@ -20,6 +20,7 @@ import javax.swing.JOptionPane;
 import au.edu.rmit.sef.model.Player;
 import au.edu.rmit.sef.model.Point;
 import au.edu.rmit.sef.model.Shape;
+import au.edu.rmit.sef.view.Board;
 import au.edu.rmit.sef.view.CellLabel;
 import au.edu.rmit.sef.view.MFrame;
 
@@ -196,6 +197,26 @@ public class UtilityFunction {
 	}
 
 	
+
+	public static void setColorForCell(Board board,Point point, int color) {
+		CellLabel tmpCell = board.getCellSquares()[point
+				.getX()][point.getY()];
+		switch (color) {
+		case SEFConstant.CellColorInt.WHITE_BG:
+			tmpCell.setIcon(new ImageIcon(SEFConstant.CellColor.WHITE_BG));
+			break;
+		case SEFConstant.CellColorInt.RED_BG:
+			tmpCell.setIcon(new ImageIcon(SEFConstant.CellColor.RED_BG));
+			break;
+		case SEFConstant.CellColorInt.GRAY_BG:
+			tmpCell.setIcon(new ImageIcon(SEFConstant.CellColor.GRAY_BG));
+			break;
+		default:
+			break;
+		}
+
+	}
+
 	
 	public static Point convertIdToPoint(String id) {
 		Point point;
@@ -234,8 +255,9 @@ public class UtilityFunction {
 			return;
 		for (Object object : tmp) {
 			Point point = (Point) object;
-			parentView.getScreen5().getSquareBoard().getCellSquares()[point.getX()][point
-					.getY()].setStatus(SEFConstant.CellStatus.UC_KEY);
+			parentView.getScreen5().getSquareBoard().getCellSquares()[point
+					.getX()][point.getY()]
+					.setStatus(SEFConstant.CellStatus.UC_KEY);
 		}
 	}
 
@@ -412,5 +434,17 @@ public class UtilityFunction {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static List<Point> getUncoveredKeyList(Board board) {
+		List<Point> mList = new ArrayList<Point>();
+		for (int i = 0; i < board.getNumRow() - 1; i++) {
+			for (int j = 0; j < board.getNumCol() - 1; j++) {
+				if (board.getCellSquares()[i][j].getStatus() == SEFConstant.CellStatus.UC_KEY) {
+					mList.add(new Point(i, j));
+				}
+			}
+		}
+		return mList;
 	}
 }

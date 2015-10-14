@@ -48,10 +48,10 @@ public class Screen5ActionListener {
 				.getSquareBoard().getShapePoints(),
 				SEFConstant.CellStatus.UC_KEY, parentView);
 
-		int dialogResult = JOptionPane.showConfirmDialog(null,
-				"Would You Like to quit?", "Warning",
-				JOptionPane.YES_NO_OPTION);
-		
+		int dialogResult = JOptionPane
+				.showConfirmDialog(null, "Would You Like to quit?", "Warning",
+						JOptionPane.YES_NO_OPTION);
+
 		if (dialogResult == JOptionPane.YES_OPTION) {
 			parentView.dispose();
 		}
@@ -59,8 +59,10 @@ public class Screen5ActionListener {
 	}
 
 	public void newActionPerformed(MouseEvent e) {
-		cMatch.refresh();
-		UtilityFunction.setStatusCellCollection(parentView.getScreen5().getSquareBoard().getShapePoints(), SEFConstant.CellStatus.BLANK, parentView);
+		cMatch.renew();
+		UtilityFunction.setStatusCellCollection(parentView.getScreen5()
+				.getSquareBoard().getShapePoints(),
+				SEFConstant.CellStatus.BLANK, parentView);
 		parentView.setScreen(SEFConstant.GameState.SCREEN1);
 	}
 
@@ -77,14 +79,101 @@ public class Screen5ActionListener {
 	}
 
 	public void guessActionPerformed(MouseEvent e) {
+		if (cMatch.getPlayers().size() == 0) {
+			JOptionPane.showMessageDialog(null, "no one can guess now!");
+			cMatch.getGuessPoints().removeAll(
+					UtilityFunction.getUncoveredKeyList(parentView.getScreen5()
+							.getSquareBoard()));
+			UtilityFunction.setStatusCellCollection(cMatch.getGuessPoints(),
+					SEFConstant.CellStatus.BLANK, parentView);
+		}
+		if (cMatch.isPlaying() == false) {
+			cMatch.getGuessPoints().removeAll(
+					UtilityFunction.getUncoveredKeyList(parentView.getScreen5()
+							.getSquareBoard()));
+			UtilityFunction.setStatusCellCollection(cMatch.getGuessPoints(),
+					SEFConstant.CellStatus.BLANK, parentView);
+			return;
+		}
+		if (cMatch.isGuessOpt() == true) {
+			cMatch.setGuessOpt(false);
+			if (PlayRule.checkGuessOptionRule(parentView, cMatch) == true) {
+				JOptionPane.showMessageDialog(null, "You win!");
+			} else {
+				JOptionPane.showMessageDialog(null, cMatch.getGuessPlayer()
+						.getName() + " - You lose and you are terminated!");
+				System.out.println(cMatch.getPlayers());
+				cMatch.setNextTurn();
+				cMatch.setNumTurns(cMatch.getNumTurns() - 1);
+				setDisplay();
+				cMatch.removePlayerFromPlayerList(cMatch.getGuessPlayer());
+				System.out.println(cMatch.getPlayers());
+				PlayRule.refreshMatch(parentView, cMatch);
+
+				if (cMatch.getPlayers().size() == 0) {
+					cMatch.setPlaying(false);
+					cMatch.renew();
+					return;
+				}
+			}
+			cMatch.getGuessPoints().removeAll(
+					UtilityFunction.getUncoveredKeyList(parentView.getScreen5()
+							.getSquareBoard()));
+			UtilityFunction.setStatusCellCollection(cMatch.getGuessPoints(),
+					SEFConstant.CellStatus.BLANK, parentView);
+			return;
+		}
+		int dialogResult = JOptionPane.showConfirmDialog(null,
+				"Do you want to select \"guess option\"?", "Warning",
+				JOptionPane.YES_NO_OPTION);
+
+		if (dialogResult == JOptionPane.YES_OPTION) {
+			cMatch.setGuessPlayer(cMatch.getPlayers().get(
+					cMatch.getCurrPlayer()));
+			cMatch.getGuessPoints().addAll(
+					UtilityFunction.getUncoveredKeyList(parentView.getScreen5()
+							.getSquareBoard()));
+			cMatch.setGuessOpt(true);
+		}
 
 	}
 
 	public void cellMouseReleased(MouseEvent e) {
+
+		if (PlayRule.checkWin(parentView, cMatch) == true) {
+			JOptionPane.showMessageDialog(null, "the game  finished");
+			return;
+		}
+		if (cMatch.getPlayers().size() == 0
+				|| (PlayRule.checkWin(parentView, cMatch) == false && cMatch
+						.getNumTurns() > 10)) {
+			cMatch.setPlaying(false);
+			JOptionPane.showMessageDialog(null,
+					"You guys lose and you are terminated!");
+			return;
+		}
+		if (cMatch.isPlaying() == false) {
+			return;
+		}
+		if (cMatch.isPlaying() == false
+				&& PlayRule.checkWin(parentView, cMatch) == false) {
+			JOptionPane.showMessageDialog(null, "you guys lose");
+		}
 		// int opt = parentView.getjComboBox2().getSelectedIndex();
 		int opt = cMatch.getPlayers().get(cMatch.getCurrPlayer()).getType();
 		List isList = null;
 		List mList = null;
+		// guess option
+		if (cMatch.isGuessOpt() == true) {
+			cMatch.getGuessPoints().add(
+					UtilityFunction.convertIdToPoint(e.getSource().toString()));
+			UtilityFunction.setColorForCell(parentView.getScreen5()
+					.getSquareBoard(), UtilityFunction.convertIdToPoint(e
+					.getSource().toString()), SEFConstant.CellColorInt.RED_BG);
+
+			return;
+		}
+		// end
 		switch (opt) {
 		case SEFConstant.ModePlay.POINT_OPT:
 			mList = PlayRule.getChosenPointCollection(
@@ -155,20 +244,39 @@ public class Screen5ActionListener {
 			UtilityFunction.setStatusCellCollection(cMatch.getTraceList(),
 					SEFConstant.CellStatus.ON_CLICK, parentView);
 		}
-		setDisplay();
-		cMatch.setNextTurn();
-		// end
+		// set display and setup for next turn
 
+		if (PlayRule.checkWin(parentView, cMatch) == true) {
+			JOptionPane.showMessageDialog(null,
+					cMatch.getPlayers().get(cMatch.getCurrPlayer()).getName()
+							+ " - you win");
+			cMatch.setPlaying(false);
+			cMatch.renew();
+			return;
+		} else {
+			setDisplay();
+			cMatch.setNextTurn();
+		}
+		// end
 	}
 
 	public void cellMousePressed(MouseEvent e) {
+		if (cMatch.getPlayers().size() == 0)
+			return;
+		if (cMatch.isPlaying() == false) {
+			return;
+		}
+		if (cMatch.isGuessOpt() == true) {
+			return;
+		}
 		// int opt = parentView.getjComboBox2().getSelectedIndex();
 		int opt = cMatch.getPlayers().get(cMatch.getCurrPlayer()).getType();
 		List isList;
 		List mList = null;// =
-		// PlayRule.getChosenPointCollection(UtilityFunction.convertIdToPoint(e.getSource().toString()),
-		// choiceOpt)
 
+		// guess option
+		if (cMatch.isGuessOpt() == true)
+			return;
 		switch (opt) {
 		case SEFConstant.ModePlay.POINT_OPT:
 			mList = PlayRule.getChosenPointCollection(
@@ -211,8 +319,6 @@ public class Screen5ActionListener {
 						SEFConstant.CellStatus.ON_CLICK, parentView);
 			}
 
-			// UtilityFunction.setColorForPointCollection(mList,
-			// SEFConstant.CellColorInt.GRAY_BG, parentView);
 			// khangcv add display
 			PlayRule.getStatusLabel(
 					UtilityFunction.convertIdToPoint(e.getSource().toString()),
@@ -254,9 +360,15 @@ public class Screen5ActionListener {
 		cMatch.getTraceList().addAll(mList);
 	}
 
-	private void setDisplay(){
-		parentView.getScreen5().getPlayernameLabel().setText(cMatch.getPlayers().get(cMatch.getCurrPlayer()).getName());
-		parentView.getScreen5().getNoroundLabel().setText(cMatch.getNumTurns()+ "");
-		
+	private void setDisplay() {
+		parentView
+				.getScreen5()
+				.getPlayernameLabel()
+				.setText(
+						cMatch.getPlayers().get(cMatch.getCurrPlayer())
+								.getName());
+		parentView.getScreen5().getNoroundLabel()
+				.setText(cMatch.getNumTurns() + "");
+
 	}
 }

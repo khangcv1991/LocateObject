@@ -18,7 +18,7 @@ public class Board extends JPanel {
 	private int numRow = SEFConstant.NUM_ROW;
 	private int numCol = SEFConstant.NUM_COL;
 	private CellLabel[][] cellSquares;
-	private List shapePoints;
+	private List<Point> shapePoints;
 
 	public Board() {
 		super(new GridLayout(0, SEFConstant.NUM_COL));
@@ -76,7 +76,7 @@ public class Board extends JPanel {
 		// ImageIcon(SEFConstant.CellColor.RED_BG));
 	}
 
-	public List getShapePoints() {
+	public List<Point> getShapePoints() {
 		return shapePoints;
 	}
 

@@ -52,7 +52,7 @@ public class Player implements Serializable{
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		return "Player " + id + " *** " + numLTurns + " turns ";
+		return "Player " + id + " *** " + name ;
 	}
 	
 }

@@ -11,6 +11,40 @@ import au.edu.rmit.sef.ulti.UtilityFunction;
 import au.edu.rmit.sef.view.MFrame;
 
 public class PlayRule {
+	
+	public static void refreshMatch(MFrame parentView, Match cMatch){
+		String currPlayer = parentView.getScreen5().getPlayernameLabel().getText().trim();
+		for(int i = 0; i < cMatch.getPlayers().size(); i++){
+			if(currPlayer.compareTo(cMatch.getPlayers().get(i).getName()) == 0){
+				cMatch.setCurrPlayer(i);
+				return;
+			}
+		}
+	}
+
+	public static boolean checkGuessOptionRule(MFrame parentView, Match cMatch) {
+		if (cMatch.isGuessOpt() == false)
+			return false;
+		if (cMatch.getGuessPoints().size() == parentView.getScreen5()
+				.getSquareBoard().getShapePoints().size()
+				&& parentView.getScreen5().getSquareBoard().getShapePoints()
+						.containsAll(cMatch.getGuessPoints())) {
+			cMatch.getGuessPoints().removeAll(cMatch.getGuessPoints());
+			return true;
+		}
+		cMatch.getGuessPoints().removeAll(cMatch.getGuessPoints());
+		return false;
+	}
+	public static boolean checkWin(MFrame parentView, Match cMatch){
+		if(cMatch.getNumTurns() > 10)
+			return false;
+		List<Point> tmp = UtilityFunction.getUncoveredKeyList(parentView.getScreen5().getSquareBoard());
+		if(tmp.size() == parentView.getScreen5().getSquareBoard().getShapePoints().size()){
+			return true;
+		}
+		return false;
+	}
+
 	/**
 	 * the method return a list of points when mouse click on the board
 	 * 

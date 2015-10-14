@@ -82,7 +82,7 @@ public class Screen4ActionListener {
 			parentView.setScreen(SEFConstant.GameState.SCREEN5);
 			parentView.getScreen5().getSquareBoard().setShapePoints(UtilityFunction.getShapePointCollection());
 			parentView.getScreen5().getNoplayerLabel().setIcon(new javax.swing.ImageIcon(getClass().getResource("/no_player2.PNG")));
-			
+			parentView.getScreen5().renew();
 		} catch (Exception e2) {
 			// TODO: handle exception
 			JOptionPane.showMessageDialog(null, "you need to fill your name",
